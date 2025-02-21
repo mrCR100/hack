@@ -5,7 +5,7 @@ import requests
 class Pipeline:
     def __init__(self):
         self.name = "deepseek(external)"
-        self.external_url = f"http://100.84.87.212:5000/chat"
+        self.external_url = f"<url>"
         pass
 
     async def on_startup(self):
