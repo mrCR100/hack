@@ -28,16 +28,6 @@ def initialize_service(args):
     engine_args = [attr.name for attr in dataclasses.fields(EngineArgs)]
     engine_params = {attr: getattr(args, attr) for attr in engine_args}
 
-    # 解析采样参数
-    sampling_args = [
-        param.name
-        for param in inspect.signature(SamplingParams).parameters.values()
-    ]
-    sampling_params = {
-        attr: getattr(args, attr)
-        for attr in sampling_args if hasattr(args, attr)
-    }
-
     # 初始化模型
     global_llm = LLM(**engine_params)
     global_tokenizer = global_llm.get_tokenizer()
@@ -79,7 +69,7 @@ def chat_endpoint():
         for output in outputs:
             generated_texts.append(output.outputs[0].text)
 
-        return jsonify(generated_texts)
+        return generated_texts
 
     except Exception as e:
         logging.error(f"Error processing request: {str(e)}")
