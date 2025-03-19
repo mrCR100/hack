@@ -1,0 +1,65 @@
+---
+- name: install yolo on jetson orin nodes
+  # should install sshpass on execution host
+  # apt install sshpass
+  # export ANSIBLE_HOST_KEY_CHECKING=False
+  hosts: orin_nodes
+  tasks:
+    - name: clear old pkgs
+      file:
+        path: /home/nvidia/pkgs
+        state: absent
+
+    - name: copy pkgs
+      copy:
+        src: pkgs
+        dest: /home/nvidia
+
+    - name: add execute permission to install.sh
+      shell: chmod +x install.sh
+      args:
+        chdir: /home/nvidia/pkgs
+      become: yes
+
+    - name: install nvidia container runtime
+      shell: ./install.sh
+      args:
+        chdir: /home/nvidia/pkgs
+      become: yes
+
+    - name: ensure docker is installed
+      package:
+        name: docker-ce
+        state: present
+
+
+    - name: start docker service
+      service:
+        name: docker
+        state: started
+      become: yes
+
+    - name: create docker image directory
+      file:
+        path: /home/nvidia/docker_images
+        state: directory
+
+    - name: copy docker image to orin nodes
+      copy:
+        # tmp use an open-sourced base image.
+        src: /home/test/docker_images/rwthika_ros2-torch_arm.tar
+        dest: /home/nvidia/docker_images/rwthika_ros2-torch_arm.tar
+
+    - name: load docker image
+      shell: docker load -i rwthika_ros2-torch_arm.tar
+      args:
+        chdir: /home/nvidia/docker_images
+      become: yes
+
+    - name: run yolo
+      shell: docker run --rm -it --env="DISPLAY=$DISPLAY" --volume="/tmp.X11-unix:/tmp/.X11-unix" rwthika/ros2-torch:humble-desktop-full-torch2.5.0-v25.02 ros2 topic list
+      become: yes
+      register: result
+
+    - debug:
+        msg: "{{ result.stdout }}"
