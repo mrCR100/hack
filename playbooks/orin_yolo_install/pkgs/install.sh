@@ -2,7 +2,7 @@
 
 set -ue
 
-SCRIPT_PATH=$(readlink -f "$0")
+SCRIPT_PATH=$(cd "$(dirname "$0")";pwd)
 
 if docker --version > /dev/null 2>&1; then
     echo "docker is already installed"

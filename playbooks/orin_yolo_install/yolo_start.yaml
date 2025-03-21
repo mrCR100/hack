@@ -1,0 +1,11 @@
+---
+- name: start yolo on jetson orin nodes
+  hosts: orin_nodes
+  tasks:
+    - name: rm old yolo
+      shell: docker rm -f yolo
+      become: yes
+
+    - name: start yolo
+      shell: docker run -d --rm --env="ROBOT_NAME={{ inventory_hostname }}" --runtime=nvidia --env="DISPLAY=$DISPLAY" --network=host --name=yolo --volume="/tmp.X11-unix:/tmp/.X11-unix" yolo_ros:v1.0 sleep 3600
+      become: yes

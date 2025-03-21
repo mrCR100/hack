@@ -46,20 +46,11 @@
 
     - name: copy docker image to orin nodes
       copy:
-        # tmp use an open-sourced base image.
-        src: /home/test/docker_images/rwthika_ros2-torch_arm.tar
-        dest: /home/nvidia/docker_images/rwthika_ros2-torch_arm.tar
+        src: /home/test/docker_images/yolo_ros_v1.0.tar
+        dest: /home/nvidia/docker_images/yolo_ros_v1.0.tar
 
     - name: load docker image
-      shell: docker load -i rwthika_ros2-torch_arm.tar
+      shell: docker load -i yolo_ros_v1.0.tar
       args:
         chdir: /home/nvidia/docker_images
       become: yes
-
-    - name: run yolo
-      shell: docker run --rm -it --env="DISPLAY=$DISPLAY" --volume="/tmp.X11-unix:/tmp/.X11-unix" rwthika/ros2-torch:humble-desktop-full-torch2.5.0-v25.02 ros2 topic list
-      become: yes
-      register: result
-
-    - debug:
-        msg: "{{ result.stdout }}"
