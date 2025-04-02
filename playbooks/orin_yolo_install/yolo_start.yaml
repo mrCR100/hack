@@ -7,5 +7,5 @@
       become: yes
 
     - name: start yolo
-      shell: docker run -d --rm --env="ROBOT_NAME={{ inventory_hostname }}" --runtime=nvidia --env="DISPLAY=$DISPLAY" --network=host --name=yolo --volume="/tmp.X11-unix:/tmp/.X11-unix" yolo_ros:v1.0 sleep 3600
+      shell: docker run -d --env="ROBOT_NAME={{ inventory_hostname }}" --runtime=nvidia --env="DISPLAY=:1" --network=host --name=yolo --volume="/tmp.X11-unix:/tmp/.X11-unix" yolo_ros:v1.0 sleep infinity
       become: yes

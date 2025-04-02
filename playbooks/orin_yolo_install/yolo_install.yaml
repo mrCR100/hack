@@ -32,7 +32,6 @@
         name: docker-ce
         state: present
 
-
     - name: start docker service
       service:
         name: docker
